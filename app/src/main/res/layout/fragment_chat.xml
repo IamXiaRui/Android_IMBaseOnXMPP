@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     tools:context="com.imbaseonxmpp.fragment.ChatFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:text="第一个页面" />
 
 </FrameLayout>

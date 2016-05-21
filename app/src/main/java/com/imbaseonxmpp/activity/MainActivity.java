@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         chatRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //切换页面
+                mainPager.setCurrentItem(0);
                 //切换按钮样式
                 changeRButtonTheme("聊天", "#ffffff", "#272636", "#60c4f5", "#ffffff");
             }
@@ -62,8 +64,39 @@ public class MainActivity extends AppCompatActivity {
         contactRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //切换页面
+                mainPager.setCurrentItem(1);
                 //切换按钮样式
-                changeRButtonTheme("聊天", "#272636", "#ffffff", "#ffffff", "#60c4f5");
+                changeRButtonTheme("联系人", "#272636", "#ffffff", "#ffffff", "#60c4f5");
+            }
+        });
+
+        mainPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        //切换按钮样式
+                        chatRButton.setChecked(true);
+                        contactRButton.setChecked(false);
+                        changeRButtonTheme("聊天", "#ffffff", "#272636", "#60c4f5", "#ffffff");
+                        break;
+                    case 1:
+                        //切换按钮样式
+                        chatRButton.setChecked(false);
+                        contactRButton.setChecked(true);
+                        changeRButtonTheme("联系人", "#272636", "#ffffff", "#ffffff", "#60c4f5");
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
             }
         });
     }
