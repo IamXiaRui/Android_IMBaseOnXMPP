@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">IMBaseOnXMPP</string>
     <string name="str_splash_welcome">欢迎进入</string>
+    <string name="str_login_login">登录</string>
+    <string name="str_login_name">账号：</string>
+    <string name="str_login_pwd">密码：</string>
+    <string name="str_login_hname">请输入用户名</string>
+    <string name="str_login_hpwd">请输入密码</string>
 </resources>

@@ -23,7 +23,7 @@ public class ThreadUtils {
      *
      * @param task 开启任务
      */
-    public static void runInMianThread(Runnable task) {
+    public static void runInMainThread(Runnable task) {
         handler.post(task);
     }
 

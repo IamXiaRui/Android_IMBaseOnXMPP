@@ -27,7 +27,7 @@ public class SplashActivity extends Activity {
      */
     private void gotoLoginActivity() {
         //主线程执行
-        ThreadUtils.runInMianThread(new Runnable() {
+        ThreadUtils.runInChildThread(new Runnable() {
             @Override
             public void run() {
                 //停留三秒
