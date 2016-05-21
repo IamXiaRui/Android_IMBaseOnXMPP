@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 
 import com.imbaseonxmpp.R;
-import com.imbaseonxmpp.utils.ThreadUtils;
+import com.imbaseonxmpp.utils.ThreadUtil;
 
 /**
  * @Description:启动引导页
@@ -27,7 +27,7 @@ public class SplashActivity extends Activity {
      */
     private void gotoLoginActivity() {
         //主线程执行
-        ThreadUtils.runInChildThread(new Runnable() {
+        ThreadUtil.runInChildThread(new Runnable() {
             @Override
             public void run() {
                 //停留三秒

@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.imbaseonxmpp.R;
-import com.imbaseonxmpp.utils.ThreadUtils;
-import com.imbaseonxmpp.utils.ToastUtils;
+import com.imbaseonxmpp.utils.ThreadUtil;
+import com.imbaseonxmpp.utils.ToastUtil;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
@@ -66,7 +66,7 @@ public class LoginActivity extends Activity {
                     pwdEText.setError("密码不能为空");
                     return;
                 }
-                ThreadUtils.runInChildThread(new Runnable() {
+                ThreadUtil.runInChildThread(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -84,7 +84,7 @@ public class LoginActivity extends Activity {
                             // 开始登录
                             conn.login(username, password);
                             // 登录成功
-                            ToastUtils.showToastSafe(LoginActivity.this, "登录成功");
+                            ToastUtil.showToastSafe(LoginActivity.this, "登录成功");
 
                             finish();
                             // 跳到主界面
@@ -93,7 +93,7 @@ public class LoginActivity extends Activity {
 
                         } catch (XMPPException e) {
                             e.printStackTrace();
-                            ToastUtils.showToastSafe(LoginActivity.this, "登录失败");
+                            ToastUtil.showToastSafe(LoginActivity.this, "登录失败");
                         }
                     }
                 });

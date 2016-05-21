@@ -5,7 +5,7 @@ import android.os.Handler;
 /**
  * @Description:线程工具类
  */
-public class ThreadUtils {
+public class ThreadUtil {
 
     /**
      * 子线程执行任务
