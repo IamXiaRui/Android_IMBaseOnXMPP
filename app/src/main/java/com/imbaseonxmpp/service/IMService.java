@@ -24,6 +24,7 @@ import java.util.Collection;
 public class IMService extends Service {
 
     public static XMPPConnection conn;
+    public static String currentAccount;
     private Roster roster;
     private ContactsRosterListener contactsRosterListener;
 

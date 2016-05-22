@@ -26,6 +26,8 @@ public class LoginActivity extends Activity {
     public static final String HOST = "172.25.10.172";
     // 对应的端口号
     public static final int PORT = 5222;
+    //对应的主机名称
+    public static final String SERVICENAME = "pc.xiarui";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,10 @@ public class LoginActivity extends Activity {
 
                             //保存连接对象
                             IMService.conn = conn;
+                            // 保存当前登录的账户
+                            String account = username + "@" + LoginActivity.SERVICENAME;
+                            IMService.currentAccount = account;
+                            //启动服务
                             Intent service = new Intent(LoginActivity.this, IMService.class);
                             startService(service);
                         } catch (XMPPException e) {

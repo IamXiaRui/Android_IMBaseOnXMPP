@@ -1,6 +1,7 @@
 package com.imbaseonxmpp.fragment;
 
 
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,9 +12,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.imbaseonxmpp.R;
+import com.imbaseonxmpp.activity.ChatActivity;
 import com.imbaseonxmpp.adapter.ContactsAdapter;
 import com.imbaseonxmpp.provider.ContactsProvider;
 import com.imbaseonxmpp.utils.ThreadUtil;
@@ -49,6 +52,9 @@ public class ContactsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         //初始化数据
         initData();
+
+        //监听器
+        initListener();
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -73,6 +79,28 @@ public class ContactsFragment extends Fragment {
     private void initData() {
         //设置数据
         setOrUpdateAdapter();
+    }
+
+    /**
+     * 列表绑定监听器
+     */
+    private void initListener() {
+        contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor c = contactsAdapter.getCursor();
+                c.moveToPosition(position);
+                // 得到账号
+                String account = c.getString(c.getColumnIndex("account"));
+                //得到昵称
+                String nickname = c.getString(c.getColumnIndex("nickname"));
+
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("account", account);
+                intent.putExtra("nickname", nickname);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
