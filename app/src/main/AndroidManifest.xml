@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.imbaseonxmpp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
     <application
@@ -20,6 +20,11 @@
         </activity>
         <activity android:name=".activity.LoginActivity"></activity>
         <activity android:name=".activity.MainActivity"></activity>
+
+        <provider
+            android:name="com.imbaseonxmpp.provider.ContactsProvider"
+            android:authorities="com.imbaseonxmpp.provider.ContactsProvider" />
+        <!--<service android:name="com.itheima.xmpp_20150807.service.IMService"/>-->
     </application>
 
 </manifest>

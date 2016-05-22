@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.imbaseonxmpp.R;
+import com.imbaseonxmpp.service.IMService;
 import com.imbaseonxmpp.utils.ThreadUtil;
 import com.imbaseonxmpp.utils.ToastUtil;
 
@@ -85,6 +86,8 @@ public class LoginActivity extends Activity {
                             conn.login(username, password);
                             // 登录成功
                             ToastUtil.showToastSafe(LoginActivity.this, "登录成功");
+                            //保存连接对象
+                            IMService.conn = conn;
 
                             finish();
                             // 跳到主界面
