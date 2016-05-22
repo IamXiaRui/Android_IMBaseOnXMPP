@@ -24,7 +24,7 @@
         <provider
             android:name="com.imbaseonxmpp.provider.ContactsProvider"
             android:authorities="com.imbaseonxmpp.provider.ContactsProvider" />
-        <!--<service android:name="com.itheima.xmpp_20150807.service.IMService"/>-->
+        <service android:name="com.imbaseonxmpp.service.IMService" />
     </application>
 
 </manifest>

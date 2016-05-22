@@ -86,14 +86,15 @@ public class LoginActivity extends Activity {
                             conn.login(username, password);
                             // 登录成功
                             ToastUtil.showToastSafe(LoginActivity.this, "登录成功");
-                            //保存连接对象
-                            IMService.conn = conn;
-
                             finish();
                             // 跳到主界面
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
 
+                            //保存连接对象
+                            IMService.conn = conn;
+                            Intent service = new Intent(LoginActivity.this, IMService.class);
+                            startService(service);
                         } catch (XMPPException e) {
                             e.printStackTrace();
                             ToastUtil.showToastSafe(LoginActivity.this, "登录失败");

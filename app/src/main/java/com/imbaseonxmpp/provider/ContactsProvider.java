@@ -64,6 +64,8 @@ public class ContactsProvider extends ContentProvider {
                 if (id != -1) {
                     // 拼接最新的uri
                     uri = ContentUris.withAppendedId(uri, id);
+                    // 通知ContentObserver数据改变了,为null就是所有都可以收到
+                    getContext().getContentResolver().notifyChange(ContactsProvider.CONTACT_URI, null);
                 }
                 break;
         }
@@ -82,6 +84,10 @@ public class ContactsProvider extends ContentProvider {
                 SQLiteDatabase db = contactsHelper.getWritableDatabase();
                 // 影响的行数
                 deleteCount = db.delete("Contacts", selection, selectionArgs);
+                if (deleteCount > 0) {
+                    // 通知ContentObserver数据改变了,为null就是所有都可以收到
+                    getContext().getContentResolver().notifyChange(ContactsProvider.CONTACT_URI, null);
+                }
                 break;
         }
         return deleteCount;
@@ -99,6 +105,10 @@ public class ContactsProvider extends ContentProvider {
                 SQLiteDatabase db = contactsHelper.getWritableDatabase();
                 // 更新的记录总数
                 updateCount = db.update("Contacts", values, selection, selectionArgs);
+                if (updateCount > 0) {
+                    // 通知ContentObserver数据改变了,为null就是所有都可以收到
+                    getContext().getContentResolver().notifyChange(ContactsProvider.CONTACT_URI, null);
+                }
                 break;
         }
         return updateCount;
