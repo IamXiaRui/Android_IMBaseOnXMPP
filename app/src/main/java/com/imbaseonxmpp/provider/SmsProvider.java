@@ -60,8 +60,9 @@ public class SmsProvider extends ContentProvider {
                 // 插入之后对于的id
                 long id = smsDBOpenHelper.getWritableDatabase().insert("Sms", "", values);
                 if (id > 0) {
-                    System.out.println("--------------SmsProvider insertSuccess--------------");
                     uri = ContentUris.withAppendedId(uri, id);
+                    // 发送数据改变的信号
+                    getContext().getContentResolver().notifyChange(SmsProvider.SMS_URI, null);
                 }
                 break;
         }
@@ -76,7 +77,8 @@ public class SmsProvider extends ContentProvider {
                 // 具体删除了几条数据
                 deleteCount = smsDBOpenHelper.getWritableDatabase().delete("Sms", selection, selectionArgs);
                 if (deleteCount > 0) {
-                    System.out.println("--------------SmsProvider deleteSuccess--------------");
+                    // 发送数据改变的信号
+                    getContext().getContentResolver().notifyChange(SmsProvider.SMS_URI, null);
                 }
                 break;
         }
@@ -91,7 +93,8 @@ public class SmsProvider extends ContentProvider {
                 // 更新了几条数据
                 updateCount = smsDBOpenHelper.getWritableDatabase().update("Sms", values, selection, selectionArgs);
                 if (updateCount > 0) {
-                    System.out.println("--------------SmsProvider updateSuccess--------------");
+                    // 发送数据改变的信号
+                    getContext().getContentResolver().notifyChange(SmsProvider.SMS_URI, null);
                 }
                 break;
         }
@@ -105,7 +108,6 @@ public class SmsProvider extends ContentProvider {
         switch (mUriMatcher.match(uri)) {
             case SMS:
                 cursor = smsDBOpenHelper.getReadableDatabase().query("Sms", projection, selection, selectionArgs, null, null, sortOrder);
-                System.out.println("--------------SmsProvider querySuccess--------------");
                 break;
             case SESSION:
                 SQLiteDatabase db = smsDBOpenHelper.getReadableDatabase();

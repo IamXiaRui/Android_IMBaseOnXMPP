@@ -48,6 +48,10 @@ public class LoginActivity extends Activity {
         nameEText = (EditText) findViewById(R.id.et_name);
         pwdEText = (EditText) findViewById(R.id.et_pwd);
         loginButton = (Button) findViewById(R.id.bt_login);
+
+        /*----------测试用例------------*/
+        nameEText.setText("admin");
+        pwdEText.setText("123456");
     }
 
     /**

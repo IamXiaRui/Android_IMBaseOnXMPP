@@ -16,7 +16,7 @@ public class SmsDBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table Sms (_id integer primary key autoincrement,from_account text," +
-                "to_account text,body text,status text,type text,time text,session_account text)");
+                "to_account text,body text,type text,time text,session_account text)");
     }
 
     @Override
