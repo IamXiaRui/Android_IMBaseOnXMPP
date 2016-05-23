@@ -3,20 +3,29 @@ package com.imbaseonxmpp.service;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.imbaseonxmpp.provider.ContactsProvider;
+import com.imbaseonxmpp.provider.SmsProvider;
 import com.imbaseonxmpp.utils.PinyinUtil;
 import com.imbaseonxmpp.utils.ThreadUtil;
 
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description:联系人更新服务
@@ -28,15 +37,30 @@ public class IMService extends Service {
     private Roster roster;
     private ContactsRosterListener contactsRosterListener;
 
+    private ChatManager chatManager;
+    private ChatMessageListener chatMessageListener;
+    private Chat currentChat;
+    private Map<String, Chat> chatMap = new HashMap<String, Chat>();
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new IMBinder();
+    }
+
+    public class IMBinder extends Binder {
+        /**
+         * 返回service的实例
+         */
+        public IMService getService() {
+            return IMService.this;
+        }
     }
 
     @Override
     public void onCreate() {
-        //开启子线程获取数据
+
+        //开启子线程同步联系人名单
         ThreadUtil.runInChildThread(new Runnable() {
             @Override
             public void run() {
@@ -53,6 +77,13 @@ public class IMService extends Service {
                     //保存或者更新联系人名单
                     saveOrUpdateEntry(entry);
                 }
+
+                //获取消息管理者
+                if (chatManager == null) {
+                    chatManager = IMService.conn.getChatManager();
+                }
+                //chatManager.addChatListener(chatMessageListener);
+
             }
         });
         super.onCreate();
@@ -68,6 +99,9 @@ public class IMService extends Service {
         // 移除rosterListener
         if (roster != null && contactsRosterListener != null) {
             roster.removeRosterListener(contactsRosterListener);
+        }
+        if (currentChat != null && chatMessageListener != null) {
+            currentChat.removeMessageListener(chatMessageListener);
         }
         super.onDestroy();
     }
@@ -146,5 +180,67 @@ public class IMService extends Service {
         public void presenceChanged(Presence presence) {
 
         }
+    }
+
+    /**
+     * 消息监听者
+     */
+    class ChatMessageListener implements MessageListener {
+
+        @Override
+        public void processMessage(Chat chat, Message message) {
+            String msgbody = message.getBody();
+            if (msgbody == null || "".equals(msgbody)) {
+                return;
+            }
+            //得到发送者账户
+            String participant = chat.getParticipant();
+            //收到消息 保存消息
+            saveMessage(participant, message);
+        }
+    }
+
+    /**
+     * 发送消息
+     */
+    public void sendMessage(final Message msg) {
+        try {
+            //创建消息监听者对象
+            if (chatMessageListener == null) {
+                chatMessageListener = new ChatMessageListener();
+            }
+
+            String toAccount = msg.getTo();
+            //创建并保存聊天对象
+            if (chatMap.containsKey(toAccount)) {
+                currentChat = chatMap.get(toAccount);
+            } else {
+                currentChat = chatManager.createChat(toAccount, chatMessageListener);
+                chatMap.put(toAccount, currentChat);
+            }
+            //发送消息
+            currentChat.sendMessage(msg);
+
+            //发送消息 保存消息
+            saveMessage(toAccount, msg);
+
+        } catch (XMPPException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 保存消息
+     */
+
+    private void saveMessage(String sessionAccount, Message msg) {
+        ContentValues values = new ContentValues();
+        values.put("from_account", msg.getFrom());
+        values.put("to_account", msg.getTo());
+        values.put("body", msg.getBody());
+        values.put("type", msg.getType().name());
+        values.put("time", System.currentTimeMillis());
+        values.put("session_account", sessionAccount);
+        getContentResolver().insert(SmsProvider.SMS_URI, values);
     }
 }

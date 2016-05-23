@@ -1,11 +1,14 @@
 package com.imbaseonxmpp.activity;
 
-import android.content.ContentValues;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -19,10 +22,6 @@ import com.imbaseonxmpp.provider.SmsProvider;
 import com.imbaseonxmpp.service.IMService;
 import com.imbaseonxmpp.utils.ThreadUtil;
 
-import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.ChatManager;
-import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
 public class ChatActivity extends AppCompatActivity {
@@ -34,26 +33,34 @@ public class ChatActivity extends AppCompatActivity {
     private SmsAdapter smsAdapter;
     private IMService imService;
 
+    private ChatContentObserver chatContentObserver = new ChatContentObserver(new Handler());
+    private ChatServiceConnection chatServiceConnection = new ChatServiceConnection();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
         init();
-
         initView();
-
         initData();
-
         initListener();
     }
 
 
     /**
-     * 初始化基本数据
+     * 初始化
      */
     private void init() {
+        //注册监听
         registerContentObserver();
+
+        //绑定服务
+        Intent serviceIntent = new Intent(ChatActivity.this, IMService.class);
+        bindService(serviceIntent, chatServiceConnection, BIND_AUTO_CREATE);
+
+        //得到数据
         chatAccount = getIntent().getStringExtra("account");
         chatNickName = getIntent().getStringExtra("nickname");
     }
@@ -118,46 +125,38 @@ public class ChatActivity extends AppCompatActivity {
                 ThreadUtil.runInChildThread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            final String inputMsg = inputEText.getText().toString().trim();
-                            //不允许发送空消息
-                            if (inputMsg == null || "".equals(inputMsg)) {
-                                ThreadUtil.runInMainThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        inputEText.setError("不能发送空消息");
-                                    }
-                                });
-                                return;
-                            }
-                            //获取消息管理者
-                            ChatManager chatManager = IMService.conn.getChatManager();
-                            //创建消息监听者对象
-                            ChatMessageListener chatMessageListener = new ChatMessageListener();
-                            //创建聊天对象
-                            Chat chat = chatManager.createChat(chatAccount, chatMessageListener);
-                            //设置消息
-                            Message msg = new Message();
-                            msg.setFrom(IMService.currentAccount);// 当前登录的用户
-                            msg.setTo(chatAccount);
-                            msg.setBody(inputMsg);// 输入框里面的内容
-                            msg.setType(Message.Type.chat);// 类型就是chat
-                            //发送消息
-                            chat.sendMessage(msg);
-
-                            //发送消息 保存消息
-                            saveMessage(chatAccount, msg);
-
-                            //清空输入框
+                        final String inputMsg = inputEText.getText().toString().trim();
+                        //不允许发送空消息
+                        if (inputMsg == null || "".equals(inputMsg)) {
                             ThreadUtil.runInMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    inputEText.setText("");
+                                    inputEText.setError("不能发送空消息");
                                 }
                             });
-                        } catch (XMPPException e) {
-                            e.printStackTrace();
+                            return;
                         }
+
+                        //初始化消息属性
+                        Message msg = new Message();
+                        // 当前登录的用户
+                        msg.setFrom(IMService.currentAccount);
+                        // 需要发送给的用户
+                        msg.setTo(chatAccount);
+                        // 输入框里面的内容
+                        msg.setBody(inputMsg);
+                        // 类型就是chat
+                        msg.setType(Message.Type.chat);
+
+                        //调用服务中的发送消息方法
+                        imService.sendMessage(msg);
+                        //清空输入框
+                        ThreadUtil.runInMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                inputEText.setText("");
+                            }
+                        });
                     }
                 });
             }
@@ -166,46 +165,39 @@ public class ChatActivity extends AppCompatActivity {
 
 
     /**
-     * 保存消息
+     * 反注册监听与解绑服务
      */
-
-    private void saveMessage(String sessionAccount, Message msg) {
-        ContentValues values = new ContentValues();
-        values.put("from_account", msg.getFrom());
-        values.put("to_account", msg.getTo());
-        values.put("body", msg.getBody());
-        values.put("type", msg.getType().name());
-        values.put("time", System.currentTimeMillis());
-        values.put("session_account", sessionAccount);
-        getContentResolver().insert(SmsProvider.SMS_URI, values);
-    }
-
     @Override
     protected void onDestroy() {
+        //反注册监听
         unRegisterContentObserver();
+        //解绑服务
+        if (chatServiceConnection != null) {
+            unbindService(chatServiceConnection);
+        }
+
         super.onDestroy();
     }
 
     /**
-     * 消息监听者
+     * 使用ContentObserver时刻监听记录的改变
      */
-    class ChatMessageListener implements MessageListener {
+    class ChatContentObserver extends ContentObserver {
 
+        public ChatContentObserver(Handler handler) {
+            super(handler);
+        }
+
+        /**
+         * 接收到数据记录的改变
+         */
         @Override
-        public void processMessage(Chat chat, Message message) {
-            String msgbody = message.getBody();
-            if (msgbody == null || "".equals(msgbody)) {
-                return;
-            }
-            //得到发送者账户
-            String participant = chat.getParticipant();
-            //收到消息 保存消息
-            saveMessage(participant, message);
+        public void onChange(boolean selfChange, Uri uri) {
+            // 设置adapter或者notifyadapter
+            setAdapterOrNotify();
+            super.onChange(selfChange, uri);
         }
     }
-
-    /*=============== 使用contentObserver时刻监听记录的改变 ===============*/
-    private ChatContentObserver chatContentObserver = new ChatContentObserver(new Handler());
 
     /**
      * 注册监听
@@ -221,20 +213,21 @@ public class ChatActivity extends AppCompatActivity {
         getContentResolver().unregisterContentObserver(chatContentObserver);
     }
 
-    class ChatContentObserver extends ContentObserver {
 
-        public ChatContentObserver(Handler handler) {
-            super(handler);
+    /**
+     * 定义ServiceConnection调用服务里面的方法
+     */
+    class ChatServiceConnection implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            IMService.IMBinder binder = (IMService.IMBinder) service;
+            imService = binder.getService();
         }
 
-        /**
-         * 接收到数据记录的改变
-         */
         @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            // 设置adapter或者notifyadapter
-            setAdapterOrNotify();
-            super.onChange(selfChange, uri);
+        public void onServiceDisconnected(ComponentName name) {
+
         }
     }
 
