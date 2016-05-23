@@ -24,6 +24,10 @@
             android:name=".provider.ContactsProvider"
             android:authorities="com.imbaseonxmpp.provider.ContactsProvider" />
 
+        <provider
+            android:name=".provider.SmsProvider"
+            android:authorities="com.imbaseonxmpp.provider.SmsProvider" />
+
         <service android:name=".service.IMService" />
 
         <activity android:name=".activity.ChatActivity"></activity>
