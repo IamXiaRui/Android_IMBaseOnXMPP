@@ -12,10 +12,10 @@ import com.imbaseonxmpp.R;
 /**
  * @Description:联系人列表适配器
  */
-public class ContactsAdapter extends CursorAdapter {
+public class ContactAdapter extends CursorAdapter {
     private Cursor contactCursor;
 
-    public ContactsAdapter(Context context, Cursor cursor) {
+    public ContactAdapter(Context context, Cursor cursor) {
         super(context, cursor);
         this.contactCursor = cursor;
     }
@@ -36,8 +36,10 @@ public class ContactsAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         TextView accountText = (TextView) view.findViewById(R.id.tv_account);
         TextView nicknameText = (TextView) view.findViewById(R.id.tv_nickname);
+        //得到内容
         String accountStr = cursor.getString(contactCursor.getColumnIndex("account"));
         String nicknameStr = cursor.getString(contactCursor.getColumnIndex("nickname"));
+
         accountText.setText(accountStr);
         nicknameText.setText(nicknameStr);
     }

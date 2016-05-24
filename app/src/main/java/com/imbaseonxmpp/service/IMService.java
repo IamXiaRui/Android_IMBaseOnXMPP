@@ -198,6 +198,8 @@ public class IMService extends Service {
             }
             //得到发送者账户
             String participant = chat.getParticipant();
+            // 统一格式化处理
+            participant = formatAccount(participant);
             //收到消息 保存消息
             saveMessage(participant, message);
         }
@@ -233,13 +235,29 @@ public class IMService extends Service {
 
     private void saveMessage(String sessionAccount, Message msg) {
         ContentValues values = new ContentValues();
-        values.put("from_account", msg.getFrom());
-        values.put("to_account", msg.getTo());
+        //统一格式化处理
+        sessionAccount = formatAccount(sessionAccount);
+        String from = formatAccount(msg.getFrom());
+        String to = formatAccount(msg.getTo());
+        //添加数据
+        values.put("from_account", from);
+        values.put("to_account", to);
         values.put("body", msg.getBody());
         values.put("type", msg.getType().name());
         values.put("time", System.currentTimeMillis());
         values.put("session_account", sessionAccount);
+
         getContentResolver().insert(SmsProvider.SMS_URI, values);
+    }
+
+    /**
+     * 账户格式化处理
+     *
+     * @param accout
+     * @return
+     */
+    private String formatAccount(String accout) {
+        return accout.substring(0, accout.indexOf("@")) + "@" + LoginActivity.SERVICENAME;
     }
 
     /**
@@ -251,8 +269,8 @@ public class IMService extends Service {
             // 判断chat是否存在map里面
             String participant = chat.getParticipant();// 和我聊天的那个人
 
-            // 因为别人创建和我自己创建,参与者(和我聊天的人)对应的JID不同.所以需要统一处理
-            participant = participant.substring(0, participant.indexOf("@")) + "@" + LoginActivity.SERVICENAME;
+            // 统一格式化处理
+            participant = formatAccount(participant);
 
             if (!chatMap.containsKey(participant)) {
                 // 保存chat

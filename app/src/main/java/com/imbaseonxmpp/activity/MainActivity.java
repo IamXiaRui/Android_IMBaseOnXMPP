@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.imbaseonxmpp.R;
 import com.imbaseonxmpp.adapter.MainViewPagerAdapter;
-import com.imbaseonxmpp.fragment.ChatFragment;
+import com.imbaseonxmpp.fragment.SessionFragment;
 import com.imbaseonxmpp.fragment.ContactsFragment;
 
 import java.util.ArrayList;
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initData() {
 
-        fragmentList.add(new ChatFragment());
+        fragmentList.add(new SessionFragment());
         fragmentList.add(new ContactsFragment());
 
         mainPager.setAdapter(new MainViewPagerAdapter(fragmentList, getSupportFragmentManager()));

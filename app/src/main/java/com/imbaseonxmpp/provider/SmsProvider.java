@@ -5,7 +5,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
@@ -110,10 +109,9 @@ public class SmsProvider extends ContentProvider {
                 cursor = smsDBOpenHelper.getReadableDatabase().query("Sms", projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case SESSION:
-                SQLiteDatabase db = smsDBOpenHelper.getReadableDatabase();
-                cursor = db.rawQuery("SELECT * FROM "
-                        + "(SELECT * FROM Sms WHERE from_account = ? or to_account = ? ORDER BY time ASC)"
-                        + " GROUP BY session_account", selectionArgs);
+                cursor = smsDBOpenHelper.getReadableDatabase().rawQuery("SELECT * FROM " +
+                        "(SELECT * FROM Sms WHERE from_account = ? or to_account = ? ORDER BY time ASC)" +
+                        "GROUP BY session_account", selectionArgs);
         }
         return cursor;
     }

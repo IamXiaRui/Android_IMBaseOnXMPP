@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 import com.imbaseonxmpp.R;
 import com.imbaseonxmpp.activity.ChatActivity;
-import com.imbaseonxmpp.adapter.ContactsAdapter;
+import com.imbaseonxmpp.adapter.ContactAdapter;
 import com.imbaseonxmpp.provider.ContactsProvider;
 import com.imbaseonxmpp.utils.ThreadUtil;
 
@@ -27,7 +27,7 @@ import com.imbaseonxmpp.utils.ThreadUtil;
 public class ContactsFragment extends Fragment {
     private ListView contactListView;
 
-    private ContactsAdapter contactsAdapter;
+    private ContactAdapter contactAdapter;
     private ContactsContentObserver contactsContentObserver = new ContactsContentObserver(new Handler());
 
     @Override
@@ -88,7 +88,7 @@ public class ContactsFragment extends Fragment {
         contactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor c = contactsAdapter.getCursor();
+                Cursor c = contactAdapter.getCursor();
                 c.moveToPosition(position);
                 // 得到账号
                 String account = c.getString(c.getColumnIndex("account"));
@@ -108,9 +108,9 @@ public class ContactsFragment extends Fragment {
      */
     public void setOrUpdateAdapter() {
         //判断Adapter是否存在
-        if (contactsAdapter != null) {
+        if (contactAdapter != null) {
             // 只执行刷新
-            contactsAdapter.getCursor().requery();
+            contactAdapter.getCursor().requery();
             return;
         }
         ThreadUtil.runInChildThread(new Runnable() {
@@ -126,8 +126,8 @@ public class ContactsFragment extends Fragment {
                     @Override
                     public void run() {
                         //设置Adapter
-                        contactsAdapter = new ContactsAdapter(getContext(), cursor);
-                        contactListView.setAdapter(contactsAdapter);
+                        contactAdapter = new ContactAdapter(getContext(), cursor);
+                        contactListView.setAdapter(contactAdapter);
                     }
                 });
             }
