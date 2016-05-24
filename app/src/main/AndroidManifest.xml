@@ -29,6 +29,7 @@
             android:authorities="com.imbaseonxmpp.provider.SmsProvider" />
 
         <service android:name=".service.IMService" />
+        <service android:name=".service.SystemPushService" />
 
         <activity android:name=".activity.ChatActivity"></activity>
     </application>

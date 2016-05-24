@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.imbaseonxmpp.R;
 import com.imbaseonxmpp.service.IMService;
+import com.imbaseonxmpp.service.SystemPushService;
 import com.imbaseonxmpp.utils.ThreadUtil;
 import com.imbaseonxmpp.utils.ToastUtil;
 
@@ -102,9 +103,15 @@ public class LoginActivity extends Activity {
                             // 保存当前登录的账户
                             String account = username + "@" + LoginActivity.SERVICENAME;
                             IMService.currentAccount = account;
-                            //启动服务
-                            Intent service = new Intent(LoginActivity.this, IMService.class);
-                            startService(service);
+
+                            //启动后台监听服务
+                            Intent chatService = new Intent(LoginActivity.this, IMService.class);
+                            startService(chatService);
+
+                            //启动系统推送服务
+                            Intent pushService = new Intent(LoginActivity.this, SystemPushService.class);
+                            startService(pushService);
+
                         } catch (XMPPException e) {
                             e.printStackTrace();
                             ToastUtil.showToastSafe(LoginActivity.this, "登录失败");
