@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.List;
 
 /**
- * @Description:
+ * 主界面ViewPager适配器
  */
 public class MainViewPagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragmentList;

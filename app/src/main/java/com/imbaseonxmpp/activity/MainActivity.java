@@ -17,12 +17,15 @@ import com.imbaseonxmpp.fragment.ContactsFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 主界面
+ */
 public class MainActivity extends AppCompatActivity {
     private TextView titleText;
     private ViewPager mainPager;
     private RadioButton chatRButton, contactRButton;
 
-    private List<Fragment> fragmentList = new ArrayList<Fragment>();
+    private List<Fragment> fragmentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

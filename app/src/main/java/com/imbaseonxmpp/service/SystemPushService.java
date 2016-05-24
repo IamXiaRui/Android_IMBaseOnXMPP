@@ -4,14 +4,15 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
+
+import com.imbaseonxmpp.utils.ToastUtil;
 
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 
 /**
- * @Description:系统通知推送服务
+ * 系统通知推送服务
  */
 public class SystemPushService extends Service {
 
@@ -31,8 +32,7 @@ public class SystemPushService extends Service {
                 if (body == null || "".equals(body)) {
                     return;
                 }
-               // ToastUtil.showToastSafe(getApplicationContext(), body);
-                Toast.makeText(SystemPushService.this, body, Toast.LENGTH_SHORT).show();
+                ToastUtil.showToastSafe(getApplicationContext(), body);
             }
         }, null);
         super.onCreate();

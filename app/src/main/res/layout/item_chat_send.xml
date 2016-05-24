@@ -15,8 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:text="2014 3:32" />
+        android:gravity="center" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,7 +40,6 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_send_head"
             android:background="@drawable/img_chat_send"
-            android:text="黑马"
             android:textSize="20sp" />
     </RelativeLayout>
 

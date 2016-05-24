@@ -10,9 +10,6 @@ import android.widget.Toast;
 public class ToastUtil {
     /**
      * 可以在子线程中弹出toast
-     *
-     * @param context
-     * @param text
      */
     public static void showToastSafe(final Context context, final String text) {
         ThreadUtil.runInMainThread(new Runnable() {

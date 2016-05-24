@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * @Description:联系人数据库帮助类
+ * 联系人数据库帮助类
  */
 public class ContactsDBOpenHelper extends SQLiteOpenHelper {
 

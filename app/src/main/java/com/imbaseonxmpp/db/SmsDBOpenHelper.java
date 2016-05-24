@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * @Description:
+ * 聊天记录帮助类
  */
 public class SmsDBOpenHelper extends SQLiteOpenHelper {
 

@@ -3,7 +3,7 @@ package com.imbaseonxmpp.utils;
 import android.os.Handler;
 
 /**
- * @Description:线程工具类
+ * 线程工具类
  */
 public class ThreadUtil {
 

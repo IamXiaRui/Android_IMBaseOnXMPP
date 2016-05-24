@@ -15,7 +15,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 /**
- * @Description:消息列表适配器
+ * 消息列表适配器
  */
 public class SmsAdapter extends CursorAdapter {
     private Cursor contactCursor;
@@ -46,7 +46,7 @@ public class SmsAdapter extends CursorAdapter {
     /**
      * 消息列表两种样式
      *
-     * @return
+     * @return 样式的个数
      */
     @Override
     public int getViewTypeCount() {
@@ -98,8 +98,7 @@ public class SmsAdapter extends CursorAdapter {
     }
 
     /**
-     * @ClassName: ViewHolder
-     * @Description:创建一个ViewHolder
+     * 创建一个ViewHolder
      */
 
     static class ViewHolder {

@@ -12,7 +12,7 @@
         android:layout_height="48dp"
         android:background="#60c4f5"
         android:gravity="center"
-        android:text="聊天"
+        android:text="@string/str_main_chat"
         android:textColor="#fff"
         android:textSize="24sp" />
 
@@ -41,7 +41,7 @@
                 android:button="@null"
                 android:drawableTop="@drawable/selector_rb_chat"
                 android:gravity="center"
-                android:text="聊天"
+                android:text="@string/str_main_bchat"
                 android:textColor="#272636" />
 
             <RadioButton
@@ -52,7 +52,7 @@
                 android:button="@null"
                 android:drawableTop="@drawable/selector_rb_contact"
                 android:gravity="center"
-                android:text="联系人"
+                android:text="@string/str_main_bcontact"
                 android:textColor="#272636" />
 
 

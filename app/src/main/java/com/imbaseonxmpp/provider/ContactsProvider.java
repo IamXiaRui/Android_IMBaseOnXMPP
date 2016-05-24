@@ -7,12 +7,13 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.imbaseonxmpp.db.ContactsDBOpenHelper;
 
 /**
- * @Description:联系人提供者
+ * 联系人提供者
  */
 public class ContactsProvider extends ContentProvider {
     // 主机地址的常量:当前类的完整路径
@@ -36,16 +37,11 @@ public class ContactsProvider extends ContentProvider {
 
     /**
      * 创建帮助类对象
-     *
-     * @return
      */
     @Override
     public boolean onCreate() {
         contactsHelper = new ContactsDBOpenHelper(getContext());
-        if (contactsHelper != null) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -53,10 +49,9 @@ public class ContactsProvider extends ContentProvider {
      */
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
-        // 数据是存到sqlite-->创建db文件,建立表-->sqliteOpenHelper
-        int code = mUriMatcher.match(uri);
-        switch (code) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
+        // 匹配后插入数据库
+        switch (mUriMatcher.match(uri)) {
             case CONTACT:
                 SQLiteDatabase db = contactsHelper.getWritableDatabase();
                 // 新插入的id
@@ -76,10 +71,9 @@ public class ContactsProvider extends ContentProvider {
      * 删除操作
      */
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        int code = mUriMatcher.match(uri);
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int deleteCount = 0;
-        switch (code) {
+        switch (mUriMatcher.match(uri)) {
             case CONTACT:
                 SQLiteDatabase db = contactsHelper.getWritableDatabase();
                 // 影响的行数
@@ -97,10 +91,9 @@ public class ContactsProvider extends ContentProvider {
      * 更新操作
      */
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int updateCount = 0;
-        int code = mUriMatcher.match(uri);
-        switch (code) {
+        switch (mUriMatcher.match(uri)) {
             case CONTACT:
                 SQLiteDatabase db = contactsHelper.getWritableDatabase();
                 // 更新的记录总数
@@ -119,10 +112,9 @@ public class ContactsProvider extends ContentProvider {
      */
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor = null;
-        int code = mUriMatcher.match(uri);
-        switch (code) {
+        switch (mUriMatcher.match(uri)) {
             case CONTACT:
                 SQLiteDatabase db = contactsHelper.getReadableDatabase();
                 cursor = db.query("Contacts", projection, selection, selectionArgs, null, null, sortOrder);
@@ -133,7 +125,7 @@ public class ContactsProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         return null;
     }
 }

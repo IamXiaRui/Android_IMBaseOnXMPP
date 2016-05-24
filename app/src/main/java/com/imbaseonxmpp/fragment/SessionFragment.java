@@ -44,8 +44,6 @@ public class SessionFragment extends Fragment {
 
     /**
      * 初始化View
-     *
-     * @param sessionView
      */
     private void initView(View sessionView) {
         sessionListView = (ListView) sessionView.findViewById(R.id.lv_session);
@@ -84,7 +82,8 @@ public class SessionFragment extends Fragment {
                 //得到一个游标
                 final Cursor cursor = getActivity().getContentResolver().query(SmsProvider.SESSION_URI, null, null,
                         new String[]{IMService.currentAccount, IMService.currentAccount}, null);
-                if (cursor.getCount() <= 0) {
+                if (cursor != null && cursor.getCount() <= 0) {
+                    cursor.close();
                     return;
                 }
                 //显示到联系人列表
@@ -95,8 +94,7 @@ public class SessionFragment extends Fragment {
                         sessionAdapter = new CursorAdapter(getActivity(), cursor) {
                             @Override
                             public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                                View sessionView = View.inflate(context, R.layout.item_session, null);
-                                return sessionView;
+                                return View.inflate(context, R.layout.item_session, null);
                             }
 
                             @Override
@@ -125,7 +123,7 @@ public class SessionFragment extends Fragment {
     public String getNickNameByAccount(String account) {
         String nickName = "";
         Cursor c = getActivity().getContentResolver().query(ContactsProvider.CONTACT_URI, null, "account =?", new String[]{account}, null);
-        if (c.getCount() > 0) {// 有数据
+        if (c != null && c.getCount() > 0) {// 有数据
             c.moveToFirst();
             nickName = c.getString(c.getColumnIndex("nickname"));
         }

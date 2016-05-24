@@ -18,6 +18,9 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
+/**
+ * 登录界面
+ */
 public class LoginActivity extends Activity {
 
     private EditText nameEText, pwdEText;
@@ -50,9 +53,6 @@ public class LoginActivity extends Activity {
         pwdEText = (EditText) findViewById(R.id.et_pwd);
         loginButton = (Button) findViewById(R.id.bt_login);
 
-        /*----------测试用例------------*/
-        nameEText.setText("admin");
-        pwdEText.setText("123456");
     }
 
     /**
@@ -101,8 +101,7 @@ public class LoginActivity extends Activity {
                             //保存连接对象
                             IMService.conn = conn;
                             // 保存当前登录的账户
-                            String account = username + "@" + LoginActivity.SERVICENAME;
-                            IMService.currentAccount = account;
+                            IMService.currentAccount = username + "@" + LoginActivity.SERVICENAME;
 
                             //启动后台监听服务
                             Intent chatService = new Intent(LoginActivity.this, IMService.class);

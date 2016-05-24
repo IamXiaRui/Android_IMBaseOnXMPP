@@ -9,9 +9,9 @@ import com.imbaseonxmpp.R;
 import com.imbaseonxmpp.utils.ThreadUtil;
 
 /**
- * @Description:启动引导页
+ * 启动引导页
  */
-public class SplashActivity extends Activity {
+class SplashActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

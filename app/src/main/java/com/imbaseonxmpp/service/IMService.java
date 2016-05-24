@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Description:联系人更新服务
+ * 联系人更新服务
  */
 public class IMService extends Service {
 
@@ -43,7 +43,7 @@ public class IMService extends Service {
     private ChatMessageListener chatMessageListener = new ChatMessageListener();
     private IMChatManagerListener imChatManagerListener = new IMChatManagerListener();
     private Chat currentChat;
-    private Map<String, Chat> chatMap = new HashMap<String, Chat>();
+    private Map<String, Chat> chatMap = new HashMap<>();
 
     @Nullable
     @Override
@@ -110,8 +110,6 @@ public class IMService extends Service {
 
     /**
      * 保存或者更新联系人名单
-     *
-     * @param entry
      */
     public void saveOrUpdateEntry(RosterEntry entry) {
         ContentValues values = new ContentValues();
@@ -136,14 +134,12 @@ public class IMService extends Service {
     }
 
     /**
-     * @Description:联系人列表监听器
+     * 联系人列表监听器
      */
     class ContactsRosterListener implements RosterListener {
 
         /**
          * 添加操作监听
-         *
-         * @param addresses
          */
         @Override
         public void entriesAdded(Collection<String> addresses) {
@@ -155,8 +151,6 @@ public class IMService extends Service {
 
         /**
          * 更新操作监听
-         *
-         * @param addresses
          */
         @Override
         public void entriesUpdated(Collection<String> addresses) {
@@ -168,8 +162,6 @@ public class IMService extends Service {
 
         /**
          * 删除操作监听
-         *
-         * @param addresses
          */
         @Override
         public void entriesDeleted(Collection<String> addresses) {
@@ -252,9 +244,6 @@ public class IMService extends Service {
 
     /**
      * 账户格式化处理
-     *
-     * @param accout
-     * @return
      */
     private String formatAccount(String accout) {
         return accout.substring(0, accout.indexOf("@")) + "@" + LoginActivity.SERVICENAME;

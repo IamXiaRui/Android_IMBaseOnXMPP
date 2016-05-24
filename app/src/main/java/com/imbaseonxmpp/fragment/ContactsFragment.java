@@ -118,7 +118,8 @@ public class ContactsFragment extends Fragment {
             public void run() {
                 //得到一个游标
                 final Cursor cursor = getActivity().getContentResolver().query(ContactsProvider.CONTACT_URI, null, null, null, null);
-                if (cursor.getCount() <= 0) {
+                if (cursor != null && cursor.getCount() <= 0) {
+                    cursor.close();
                     return;
                 }
                 //显示到联系人列表

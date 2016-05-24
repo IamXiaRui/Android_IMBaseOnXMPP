@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:text="2014 3:32"
         android:textColor="#000" />
 
     <RelativeLayout
@@ -28,7 +27,6 @@
         <!-- 头像 -->
 
         <ImageView
-
             android:id="@+id/iv_receive_head"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -45,7 +43,6 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/iv_receive_head"
             android:background="@drawable/img_chat_receive"
-            android:text="黑马"
             android:textColor="#000"
             android:textSize="20sp" />
     </RelativeLayout>

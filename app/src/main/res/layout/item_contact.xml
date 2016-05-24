@@ -27,7 +27,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="昵称"
             android:textColor="#000"
             android:textSize="20sp" />
 
@@ -36,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="账号"
             android:textColor="#a4a3a1"
             android:textSize="17sp" />
     </LinearLayout>

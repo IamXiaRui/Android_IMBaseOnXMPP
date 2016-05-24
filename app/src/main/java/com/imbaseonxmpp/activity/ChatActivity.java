@@ -24,10 +24,12 @@ import com.imbaseonxmpp.utils.ThreadUtil;
 
 import org.jivesoftware.smack.packet.Message;
 
+/**
+ * 聊天界面
+ */
 public class ChatActivity extends AppCompatActivity {
     private String chatAccount, chatNickName;
     private ListView chatListView;
-    private TextView chatTitleText;
     private Button sendButton;
     private EditText inputEText;
     private SmsAdapter smsAdapter;
@@ -69,7 +71,7 @@ public class ChatActivity extends AppCompatActivity {
      * 初始化View
      */
     private void initView() {
-        chatTitleText = (TextView) findViewById(R.id.tv_chattitle);
+        TextView chatTitleText = (TextView) findViewById(R.id.tv_chattitle);
         sendButton = (Button) findViewById(R.id.bt_send);
         inputEText = (EditText) findViewById(R.id.et_input);
         chatListView = (ListView) findViewById(R.id.lv_chat);
@@ -104,7 +106,8 @@ public class ChatActivity extends AppCompatActivity {
                 //根据查询条件 和时间升序 查询对应的聊天记录
                 final Cursor cursor = getContentResolver().query(SmsProvider.SMS_URI, null, "(from_account = ? and to_account=?)or(from_account = ? and to_account= ? )",
                         new String[]{IMService.currentAccount, chatAccount, chatAccount, IMService.currentAccount}, "time ASC");
-                if (cursor.getCount() <= 0) {
+                if (cursor != null && cursor.getCount() <= 0) {
+                    cursor.close();
                     return;
                 }
                 ThreadUtil.runInMainThread(new Runnable() {
@@ -133,7 +136,7 @@ public class ChatActivity extends AppCompatActivity {
                     public void run() {
                         final String inputMsg = inputEText.getText().toString().trim();
                         //不允许发送空消息
-                        if (inputMsg == null || "".equals(inputMsg)) {
+                        if ("".equals(inputMsg)) {
                             ThreadUtil.runInMainThread(new Runnable() {
                                 @Override
                                 public void run() {

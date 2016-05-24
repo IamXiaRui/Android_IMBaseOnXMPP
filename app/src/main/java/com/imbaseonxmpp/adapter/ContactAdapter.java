@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.imbaseonxmpp.R;
 
 /**
- * @Description:联系人列表适配器
+ * 联系人列表适配器
  */
 public class ContactAdapter extends CursorAdapter {
     private Cursor contactCursor;
@@ -25,8 +25,7 @@ public class ContactAdapter extends CursorAdapter {
      */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View contactView = View.inflate(context, R.layout.item_contact, null);
-        return contactView;
+        return View.inflate(context, R.layout.item_contact, null);
     }
 
     /**
