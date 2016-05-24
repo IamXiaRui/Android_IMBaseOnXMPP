@@ -7,6 +7,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.imbaseonxmpp.activity.LoginActivity;
 import com.imbaseonxmpp.provider.ContactsProvider;
 import com.imbaseonxmpp.provider.SmsProvider;
 import com.imbaseonxmpp.utils.PinyinUtil;
@@ -14,6 +15,7 @@ import com.imbaseonxmpp.utils.ThreadUtil;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
@@ -38,7 +40,8 @@ public class IMService extends Service {
     private ContactsRosterListener contactsRosterListener;
 
     private ChatManager chatManager;
-    private ChatMessageListener chatMessageListener;
+    private ChatMessageListener chatMessageListener = new ChatMessageListener();
+    private IMChatManagerListener imChatManagerListener = new IMChatManagerListener();
     private Chat currentChat;
     private Map<String, Chat> chatMap = new HashMap<String, Chat>();
 
@@ -82,8 +85,7 @@ public class IMService extends Service {
                 if (chatManager == null) {
                     chatManager = IMService.conn.getChatManager();
                 }
-                //chatManager.addChatListener(chatMessageListener);
-
+                chatManager.addChatListener(imChatManagerListener);
             }
         });
         super.onCreate();
@@ -182,6 +184,7 @@ public class IMService extends Service {
         }
     }
 
+
     /**
      * 消息监听者
      */
@@ -205,11 +208,6 @@ public class IMService extends Service {
      */
     public void sendMessage(final Message msg) {
         try {
-            //创建消息监听者对象
-            if (chatMessageListener == null) {
-                chatMessageListener = new ChatMessageListener();
-            }
-
             String toAccount = msg.getTo();
             //创建并保存聊天对象
             if (chatMap.containsKey(toAccount)) {
@@ -242,5 +240,26 @@ public class IMService extends Service {
         values.put("time", System.currentTimeMillis());
         values.put("session_account", sessionAccount);
         getContentResolver().insert(SmsProvider.SMS_URI, values);
+    }
+
+    /**
+     * 别人发送消息的监听类
+     */
+    class IMChatManagerListener implements ChatManagerListener {
+        @Override
+        public void chatCreated(Chat chat, boolean b) {
+            // 判断chat是否存在map里面
+            String participant = chat.getParticipant();// 和我聊天的那个人
+
+            // 因为别人创建和我自己创建,参与者(和我聊天的人)对应的JID不同.所以需要统一处理
+            participant = participant.substring(0, participant.indexOf("@")) + "@" + LoginActivity.SERVICENAME;
+
+            if (!chatMap.containsKey(participant)) {
+                // 保存chat
+                chatMap.put(participant, chat);
+                //增加监听事件
+                chat.addMessageListener(chatMessageListener);
+            }
+        }
     }
 }

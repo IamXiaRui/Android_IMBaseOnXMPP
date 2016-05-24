@@ -86,7 +86,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /**
-     * 设置Adapter还是通知更新
+     * 设置列表Adapter还是通知更新列表
      */
     public void setAdapterOrNotify() {
         if (smsAdapter != null) {
@@ -97,10 +97,16 @@ public class ChatActivity extends AppCompatActivity {
             chatListView.setSelection(c.getCount() - 1);
             return;
         }
+        //开启线程查询聊天记录并显示在列表中
         ThreadUtil.runInChildThread(new Runnable() {
             @Override
             public void run() {
-                final Cursor cursor = getContentResolver().query(SmsProvider.SMS_URI, null, null, null, null);
+                //根据查询条件 和时间升序 查询对应的聊天记录
+                final Cursor cursor = getContentResolver().query(SmsProvider.SMS_URI, null, "(from_account = ? and to_account=?)or(from_account = ? and to_account= ? )",
+                        new String[]{IMService.currentAccount, chatAccount, chatAccount, IMService.currentAccount}, "time ASC");
+                if (cursor.getCount() <= 0) {
+                    return;
+                }
                 ThreadUtil.runInMainThread(new Runnable() {
                     @Override
                     public void run() {
